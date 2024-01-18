@@ -30,7 +30,12 @@ function LoginScreen() {
                     <View style={{ marginTop: 10 }}>
                         <Button
                             title={'Login'}
-                            onPress={() => { login(username, password) }} />
+                            onPress={() => { 
+                                login(username, password);
+                                setUsername("");
+                                setPassword("");
+                            }}
+                         />
                     </View>
                 </Section>
             </View>

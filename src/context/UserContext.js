@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native';
-import { getDBConnection, createTables, getUserDB, setUserDB, deleteUserDB } from "../api/LocalDatabase";
+import { getDBConnection, createTables, getUserDB, setUserDB, deleteUserDB, deleteTable } from "../api/LocalDatabase";
 import { loginServer } from "../api/MockDataBase";
 
 const UserContext = createContext();
@@ -10,8 +10,10 @@ function useUserContext() {
 }
 
 function UserProvider({ children }) {
+
     const [userID, setUserID] = useState('');
     const [token, setToken] = useState('');
+    const [username, setUsername] = useState('');
     const navigation = useNavigation();
 
     const getUser = async () => {
@@ -19,7 +21,6 @@ function UserProvider({ children }) {
             const db = await getDBConnection();
             await createTables(db);
             const userInfo = await getUserDB(db);
-            console.log(userInfo);
             if (userInfo[0].length == 0) {
                 console.log("No Data");
             } else {
@@ -27,6 +28,7 @@ function UserProvider({ children }) {
                 if (user) {
                     setUserID(user.uid);
                     setToken(user.token);
+                    setUsername(user.username);
                     navigation.navigate('home');
                 }
             }
@@ -37,7 +39,7 @@ function UserProvider({ children }) {
 
     useEffect(() => {
         getUser();
-    })
+    }, [])
 
     const login = async (username, password) => {
         const userInfo = loginServer(username, password);
@@ -46,6 +48,9 @@ function UserProvider({ children }) {
                 const db = await getDBConnection();
                 await createTables(db);
                 await setUserDB(db, userInfo);
+                setUserID(userInfo.id);
+                setToken(userInfo.token);
+                setUsername(userInfo.username);
                 navigation.navigate('home');
             } catch (err) {
                 console.error(err);
@@ -69,7 +74,8 @@ function UserProvider({ children }) {
         login,
         logout,
         userID,
-        token
+        token,
+        username
     }
 
     return (

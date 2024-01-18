@@ -1,12 +1,13 @@
-import { Button } from "react-native";
+import { Text, Button } from "react-native";
 import { useUserContext } from "../context/UserContext";
 import { Section } from "../components";
 
 function ProfileScreen() {
-    const { logout } = useUserContext();
+    const { username, logout } = useUserContext();
     return (
         <>
             <Section title={'Profile'}>
+                <Text>{username}</Text>
                 <Button title="Logout" onPress={() => { logout() }} />
             </Section>
             <Section title={"Today's Logs"}>

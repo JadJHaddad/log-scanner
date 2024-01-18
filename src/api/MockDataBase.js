@@ -12,13 +12,6 @@ let onlineUserData = [
         password: "Password132",
         token: "token1a2b3c",
         lastState: 'out'
-    },
-    {
-        id: 3,
-        username: "thirdperson",
-        password: "Password213",
-        token: "token1a2b3c",
-        lastState: 'out'
     }
 ]
 
@@ -44,4 +37,14 @@ const loginServer = ( username, password ) => {
     return onlineUserData.find( a => a.username == username && a.password == password )
 }
 
-export { onlineChecks, onlineUserData, loginServer };
+const validateToken = ( uid, token ) => {
+    return onlineUserData.find( a => a.id == uid && a.token == token )
+}
+
+const addCheck = ( token, uid, type, time ) => {
+    if ( onlineUserData.find( a => a.id == uid && a.token == token ) ) {
+        onlineChecks.push({ uid, type, time });
+    }
+}
+
+export { loginServer, addCheck, validateToken };

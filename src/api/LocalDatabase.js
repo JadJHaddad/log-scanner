@@ -8,7 +8,8 @@ const createTables = async (db) => {
     const UserTableQuery =
         `CREATE TABLE IF NOT EXISTS user_data (
                 uid INTEGER PRIMARY KEY,
-                token TEXT NOT NULL
+                token TEXT NOT NULL,
+                username TEXT NOT NULL
             );`;
 
     const ChecksTableQuery =
@@ -23,10 +24,10 @@ const createTables = async (db) => {
 }
 
 const getUserDB = async (db) => {
-    return await db.executeSql('SELECT uid, token FROM user_data');
+    return await db.executeSql('SELECT uid, token, username FROM user_data');
 }
 const setUserDB = async (db, userInfo) => {
-    const insertQuery = "INSERT INTO user_data(uid, token) VALUES(" + userInfo.id + ", '" + userInfo.token + "');"
+    const insertQuery = "INSERT OR REPLACE INTO user_data(uid, token, username) VALUES(" + userInfo.id + ", '" + userInfo.token + "','" + userInfo.username + "');"
     return db.executeSql(insertQuery);
 }
 const deleteUserDB = async (db, uid) => {
@@ -39,7 +40,7 @@ const getChecksDB = async (db, uid) => {
     return await db.executeSql(`SELECT rowid as id, type, time FROM checks WHERE uid = ${uid} ORDER BY time ASC;`)
 }
 const setChecksDB = async (db, checkInfo) => {
-    const insertQuery = `INSERT INTO checks (uid, type, time) VALUES (${checkInfo.uid}, ${checkInfo.type}, ${checkInfo.time} );`
+    const insertQuery = `INSERT INTO checks (uid, type, time) VALUES ('` + checkInfo.uid + `','` + checkInfo.type + `','` + checkInfo.time + `' );`
     return db.executeSql(insertQuery);
 }
 const deleteCheckDB = async (db, id) => {
@@ -58,5 +59,8 @@ export {
     getUserDB,
     setUserDB,
     deleteUserDB,
+    getChecksDB,
+    setChecksDB,
+    deleteCheckDB,
     deleteTable
 };

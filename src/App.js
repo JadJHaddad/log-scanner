@@ -6,6 +6,8 @@ import { ScannerScreen, ProfileScreen, LoginScreen } from './screens';
 import ScannerIcon from './assets/scanner.svg'
 import ProfileIcon from './assets/profile.svg'
 import { UserProvider } from './context/UserContext';
+import { DataProvider } from './context/DataContext';
+import { useNetInfo } from "@react-native-community/netinfo";
 
 function Home() {
     const Tab = createBottomTabNavigator();
@@ -31,15 +33,19 @@ function Home() {
 function App() {
 
     enablePromise(true);
+    
     const Stack = createNativeStackNavigator();
+    const { isInternetReachable } = useNetInfo();
 
     return (
         <NavigationContainer>
-            <UserProvider>
-                <Stack.Navigator>
-                    <Stack.Screen name={'login'} component={LoginScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name={'home'} component={Home} options={{ headerShown: false }} />
-                </Stack.Navigator>
+            <UserProvider online={isInternetReachable}>
+                <DataProvider online={isInternetReachable}>
+                    <Stack.Navigator>
+                        <Stack.Screen name={'login'} component={LoginScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name={'home'} component={Home} options={{ headerShown: false }} />
+                    </Stack.Navigator>
+                </DataProvider>
             </UserProvider>
         </NavigationContainer>
     );
