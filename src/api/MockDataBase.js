@@ -33,18 +33,25 @@ let onlineChecks = [
     }
 ]
 
-const loginServer = ( username, password ) => {
-    return onlineUserData.find( a => a.username == username && a.password == password )
+const loginServer = (username, password) => {
+    return onlineUserData.find(a => a.username == username && a.password == password)
 }
 
-const validateToken = ( uid, token ) => {
-    return onlineUserData.find( a => a.id == uid && a.token == token )
+const validateToken = (uid, token) => {
+    return onlineUserData.find(a => a.id == uid && a.token == token)
 }
 
-const addCheck = ( token, uid, type, time ) => {
-    if ( onlineUserData.find( a => a.id == uid && a.token == token ) ) {
+const addCheck = (token, uid, type, time) => {
+    if (onlineUserData.find(a => a.id == uid && a.token == token)) {
         onlineChecks.push({ uid, type, time });
     }
 }
 
-export { loginServer, addCheck, validateToken };
+const getTodayChecks = () => {
+    let start = new Date();
+    start.setUTCHours(0, 0, 0, 0)
+    start = start.getTime();
+    return onlineChecks.filter( a => {if (a.time > start) return a} );
+}
+
+export { loginServer, addCheck, validateToken, getTodayChecks };
